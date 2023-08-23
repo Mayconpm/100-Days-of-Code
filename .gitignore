@@ -160,6 +160,3 @@ cython_debug/
 #.idea/
 __pycache__
 .idea/
-.flake8
-.isort.cfg
-.idea/
