@@ -4,7 +4,7 @@ import art
 
 
 def addition(number_1, number_2):
-    """Returns the sum of two decimal numbers as a float.
+    """Returns the add_numbers of two decimal numbers as a float.
 
     Parameters
     ----------
@@ -18,12 +18,12 @@ def addition(number_1, number_2):
     float
         A float number
     """
-    sum = number_1 + number_2
-    return sum
+    add_numbers = number_1 + number_2
+    return add_numbers
 
 
 def subtraction(number_1, number_2):
-    """Returns the subtraction of two decimal numbers as a float.
+    """Returns the numbers_subtraction of two decimal numbers as a float.
 
     Parameters
     ----------
@@ -37,12 +37,12 @@ def subtraction(number_1, number_2):
     float
         A float number
     """
-    subtraction = number_1 - number_2
-    return subtraction
+    numbers_subtraction = number_1 - number_2
+    return numbers_subtraction
 
 
 def multiplication(number_1, number_2):
-    """Returns the multiplication of two decimal numbers as a float.
+    """Returns the numbers_multiplication of two decimal numbers as a float.
 
     Parameters
     ----------
@@ -56,12 +56,12 @@ def multiplication(number_1, number_2):
     float
         A float number
     """
-    multiplication = number_1 * number_2
-    return multiplication
+    numbers_multiplication = number_1 * number_2
+    return numbers_multiplication
 
 
 def division(number_1, number_2):
-    """Returns the division of two decimal numbers as a float.
+    """Returns the numbers_division of two decimal numbers as a float.
 
     Parameters
     ----------
@@ -75,8 +75,8 @@ def division(number_1, number_2):
     float
         A float number
     """
-    division = number_1 / number_2
-    return division
+    numbers_division = number_1 / number_2
+    return numbers_division
 
 
 def calculation():

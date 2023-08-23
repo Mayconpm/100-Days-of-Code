@@ -30,21 +30,21 @@ alphabet = [
 ]
 
 
-def caesar(direction, text, shift):
+def caesar(cipher_direction, cipher_text, cipher_shift):
     max_index = len(alphabet)
     new_text = ""
-    if direction == "decode":
-        shift *= -1
-    for char in text:
+    if cipher_direction == "decode":
+        cipher_shift *= -1
+    for char in cipher_text:
         if char in alphabet:
             position = alphabet.index(char)
-            new_position = position + shift
+            new_position = position + cipher_shift
             new_position %= max_index
-            shited_letter = alphabet[new_position]
+            shifted_letter = alphabet[new_position]
         else:
-            shited_letter = char
-        new_text += shited_letter
-    print(f"The {direction}d text is {new_text}")
+            shifted_letter = char
+        new_text += shifted_letter
+    print(f"The {cipher_direction}d text is {new_text}")
     return new_text
 
 
