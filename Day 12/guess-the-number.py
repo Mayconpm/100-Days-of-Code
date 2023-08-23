@@ -10,11 +10,11 @@ def main():
     print("Welcome to the Number Guessing Game!")
     print("I'm thinking of a number between 1 and 100.")
     number = random.randint(1, 101)
-    attempts_number = choose_dificult()
+    attempts_number = choose_difficult()
     guess_game(attempts_number, number)
 
 
-def choose_dificult():
+def choose_difficult():
     difficulty = input("Choose a difficulty. Type 'easy' or 'hard': ").lower()
     if difficulty == "hard":
         attempts_number = 5
@@ -38,7 +38,6 @@ def guess_game(attempts_number, number):
         guess_game(attempts_number - 1, number)
     else:
         print("You've run out of guesses, you lose.")
-    
 
 
 if __name__ == "__main__":

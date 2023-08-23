@@ -33,31 +33,31 @@ resources = {
 }
 
 
-def generate_report(resources):
-    water = resources["water"]
-    milk = resources["milk"]
-    coffee = resources["coffee"]
+def generate_report(resources_dict):
+    water = resources_dict["water"]
+    milk = resources_dict["milk"]
+    coffee = resources_dict["coffee"]
     return f"Water: {water}ml\n Milk: {milk}ml \n Coffee: {coffee}g"
 
 
 def calculate_resources(beverage):
     ingredients = beverage["ingredients"]
-    resources_temp = resources.copy()
+    temp_dict = resources.copy()
     for ingredient, value in ingredients.items():
-        resources_temp[ingredient] -= value
-        if resources_temp[ingredient] < 0:
+        temp_dict[ingredient] -= value
+        if temp_dict[ingredient] < 0:
             print(f"Sorry there is not enough {ingredient}.")
             return None
     else:
-        return resources_temp
+        return temp_dict
 
 
-def process_coins():
-    coins_value = 0
+def process_coins() -> float:
+    value = 0
     coins = {"quarter": 0.25, "dimes": 0.10, "nickles": 0.05, "pennies": 0.01}
     for coin, value in coins.items():
-        coins_value += int(input(f"how many {coin}?: ")) * value
-    return coins_value
+        value += int(input(f"how many {coin}?: ")) * value
+    return value
 
 
 machine_working = True
