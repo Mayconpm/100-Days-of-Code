@@ -18,9 +18,9 @@ for turtle_color in turtle_colors:
 
 number_turtles = len(turtles)
 
-turtle_distance = (screen_height - (screen_height * (0.30))) / number_turtles
-x_position = -(screen_width / 2) + screen_width * (0.05)
-y_position = -(screen_height / 2) + screen_height * (0.2)
+turtle_distance = (screen_height - (screen_height * 0.30)) / number_turtles
+x_position = -(screen_width / 2) + screen_width * 0.05
+y_position = -(screen_height / 2) + screen_height * 0.2
 
 for turtle in turtles:
     turtle.up()
