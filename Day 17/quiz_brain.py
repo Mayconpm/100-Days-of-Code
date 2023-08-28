@@ -7,9 +7,7 @@ class QuizBrain:
     def next_question(self):
         new_question = self.question_list[self.question_number]
         self.question_number += 1
-        user_answer = input(
-            f"Q.{self.question_number}: {new_question.text} (True/False)?:"
-        )
+        user_answer = input(f"Q.{self.question_number}: {new_question.text} (True/False)?:")
         self.check_answer(user_answer, new_question.answer)
 
     def still_has_question(self):
