@@ -6,7 +6,7 @@ import requests
 import yaml
 from dateutil import tz
 
-with open("Day 33\ISS Overhead Notifier\data.yml") as yaml_file:
+with open(r"Day 33\ISS Overhead Notifier\data.yml") as yaml_file:
     data = yaml.safe_load(yaml_file)
 
 MY_EMAIL = data["email"]
@@ -42,7 +42,7 @@ def is_night():
 
     time_now = datetime.now().hour
 
-    if time_now >= sunset or time_now <= sunrise:
+    if time_now >= sunset or time_now <= sunrise:  # type: ignore
         return True
 
 
