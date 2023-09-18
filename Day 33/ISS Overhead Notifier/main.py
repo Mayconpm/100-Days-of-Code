@@ -3,6 +3,8 @@ import sched
 import smtplib
 import time
 from datetime import datetime, timedelta
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 import requests
 import yaml
@@ -21,19 +23,17 @@ scheduler = sched.scheduler(time.time, time.sleep)
 
 
 def convert_to_datetime(date):
-    """Converts a given date string to a datetime object in the Brazil/São Paulo timezone.
+    """
+    This function converts an ISO formatted date string to a datetime object
+    with the datetime set to the 'Brazil/São Paulo' timezone.
 
-    Args:
-        date (str): The date string to be converted. It should be in ISO format.
+    Parameters:
+    date (str): The date in ISO format (YYYY-MM-DD)
 
     Returns:
-        datetime: The converted datetime object in the Brazil/São Paulo timezone.
-
-    Example:
-        >>> convert_to_datetime('2022-01-01T12:00:00')
-        datetime.datetime(2022, 1, 1, 12, 0, tzinfo=datetime.timezone(datetime.timedelta(seconds=-10800), 'Brazil/São Paulo'))
+    date_converted (datetime.datetime): The date converted to a datetime object with the Sao Paulo timezone.
+    Note that timezone information is removed from the final return.
     """
-
     # Define the timezone you want to convert to
     to_zone = tz.gettz("Brazil/São Paulo")
 
@@ -84,7 +84,8 @@ def is_ISS_overhead():
     """Check if the International Space Station (ISS) is overhead.
 
     Returns:
-        bool: True if the ISS is overhead within a 5 degree latitude and longitude range from MY_LATITUDE and MY_LONGITUDE, False otherwise.
+        bool: True if the ISS is overhead within a 5 degree latitude and longitude range from MY_LATITUDE and
+        MY_LONGITUDE, False otherwise.
     """
 
     response = requests.get(url="http://api.open-notify.org/iss-now.json")
@@ -94,7 +95,7 @@ def is_ISS_overhead():
     iss_latitude = float(data["iss_position"]["latitude"])
     iss_longitude = float(data["iss_position"]["longitude"])
 
-    if (iss_latitude - MY_LATITUDE) <= 5 and (iss_longitude - MY_LONGITUDE) <= 5:
+    if abs(iss_latitude - MY_LATITUDE) <= 1 and abs(iss_longitude - MY_LONGITUDE) <= 1:
         return True
     else:
         return False
@@ -116,11 +117,10 @@ def is_night():
         return True
 
 
-time_now = datetime.now()
-
-
 def ISS_notifier(scheduler):
-    """Send an email notification if the International Space Station (ISS) is overhead during the night.
+    """This function sends an email notification if the International Space Station (ISS) is overhead during the night.
+    The function checks if it is night time and if the ISS is overhead.
+    If both conditions are met, it sends an email notification.
 
     Args:
         scheduler (scheduler): The scheduler object used to schedule the function to run periodically.
@@ -131,22 +131,33 @@ def ISS_notifier(scheduler):
     Raises:
         None
 
-    Notes:
-        - This function checks if it is night time and if the ISS is overhead.
-        - If both conditions are met, it sends an email notification using the provided email credentials.
-        - The email is sent to the specified receiver email address.
-        - The email message simply says "Look Up!".
-        - The function is scheduled to run every 60 seconds using the provided scheduler object.
     """
 
+    # The function checks if it is night time and the ISS is overhead
+    # time_now = datetime.now()
     if is_night() and is_ISS_overhead():
+        # If both conditions are met, it prepares an email.
+        msg = MIMEMultipart()
+        msg["From"] = MY_EMAIL
+        msg["To"] = RECEIVER_MAIL
+        msg["Subject"] = "ISS Overhead"
+        body = "Look Up!"
+        msg.attach(MIMEText(body, "plain"))
+        text = msg.as_string()
+
+        # The function sends the email using a connection to an SMTP server.
         with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
             connection.starttls()
             connection.login(user=MY_EMAIL, password=MY_PASSWORD)
-            connection.sendmail(from_addr=MY_EMAIL, to_addrs=RECEIVER_MAIL, msg="Look Up!")
+            connection.sendmail(from_addr=MY_EMAIL, to_addrs=RECEIVER_MAIL, msg=text)
             print("Email Sent.")
+
+    # The function is scheduled to run every 60 seconds
     scheduler.enter(60, 1, ISS_notifier, (scheduler,))
 
 
-scheduler.enter(1, 1, ISS_notifier, (scheduler,))
-scheduler.run()
+try:
+    scheduler.enter(30, 1, ISS_notifier, (scheduler,))
+    scheduler.run()
+except Exception as exc:
+    print(f"An error occurred: {exc}")
