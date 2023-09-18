@@ -1,3 +1,4 @@
+# Import the necessary library
 import sched
 import smtplib
 import time
@@ -20,14 +21,48 @@ scheduler = sched.scheduler(time.time, time.sleep)
 
 
 def convert_to_datetime(date):
+    """Converts a given date string to a datetime object in the Brazil/São Paulo timezone.
+
+    Args:
+        date (str): The date string to be converted. It should be in ISO format.
+
+    Returns:
+        datetime: The converted datetime object in the Brazil/São Paulo timezone.
+
+    Example:
+        >>> convert_to_datetime('2022-01-01T12:00:00')
+        datetime.datetime(2022, 1, 1, 12, 0, tzinfo=datetime.timezone(datetime.timedelta(seconds=-10800), 'Brazil/São Paulo'))
+    """
+
+    # Define the timezone you want to convert to
     to_zone = tz.gettz("Brazil/São Paulo")
+
+    # Convert the input date to a datetime object
     date_converted = datetime.fromisoformat(date)
+
+    # Convert the datetime object to the desired timezone
     date_converted = date_converted.astimezone(to_zone)
+
+    # Remove the timezone information from the datetime object
     date_converted = date_converted.replace(tzinfo=None)
+
+    # Return the converted date
     return date_converted
 
 
 def get_sunrise_sunset(time_now):
+    """Get the sunrise and sunset times for a given date and location.
+
+    Args:
+        time_now (datetime): The current date and time.
+
+    Returns:
+        tuple: A tuple containing the sunrise and sunset times as datetime objects.
+
+    Raises:
+        HTTPError: If there is an error in the HTTP request to the API.
+    """
+
     date_time = time_now.strftime("%Y-%m-%d")
     parameters = {
         "lat": MY_LATITUDE,
@@ -46,6 +81,12 @@ def get_sunrise_sunset(time_now):
 
 
 def is_ISS_overhead():
+    """Check if the International Space Station (ISS) is overhead.
+
+    Returns:
+        bool: True if the ISS is overhead within a 5 degree latitude and longitude range from MY_LATITUDE and MY_LONGITUDE, False otherwise.
+    """
+
     response = requests.get(url="http://api.open-notify.org/iss-now.json")
     response.raise_for_status()
     data = response.json()
@@ -60,6 +101,12 @@ def is_ISS_overhead():
 
 
 def is_night():
+    """Check if it is currently night time.
+
+    Returns:
+        bool: True if it is currently night time, False otherwise.
+    """
+
     time_now = datetime.now()
     time_tomorrow = time_now + timedelta(days=1)
     _, sunset = get_sunrise_sunset(time_now)
@@ -73,6 +120,25 @@ time_now = datetime.now()
 
 
 def ISS_notifier(scheduler):
+    """Send an email notification if the International Space Station (ISS) is overhead during the night.
+
+    Args:
+        scheduler (scheduler): The scheduler object used to schedule the function to run periodically.
+
+    Returns:
+        None
+
+    Raises:
+        None
+
+    Notes:
+        - This function checks if it is night time and if the ISS is overhead.
+        - If both conditions are met, it sends an email notification using the provided email credentials.
+        - The email is sent to the specified receiver email address.
+        - The email message simply says "Look Up!".
+        - The function is scheduled to run every 60 seconds using the provided scheduler object.
+    """
+
     if is_night() and is_ISS_overhead():
         with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
             connection.starttls()
