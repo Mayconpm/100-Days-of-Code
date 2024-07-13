@@ -15,8 +15,6 @@ def get_question_data(num_questions):
 
 question_data = get_question_data(10)
 
-print(question_data)
-
 # question_data = [
 #     {
 #         "category": "Science: Computers",
