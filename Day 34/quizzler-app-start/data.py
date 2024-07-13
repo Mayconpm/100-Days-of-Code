@@ -1,8 +1,21 @@
 import requests
 
-response = requests.get("https://opentdb.com/api.php?amount=10&type=boolean")
-response_json = response.json()
-print(response_json["results"])
+
+def get_question_data(num_questions):
+    parameters = {
+        "amount": num_questions,
+        "type": "boolean",
+    }
+    response = requests.get(
+        "https://opentdb.com/api.php?amount=10&type=boolean", params=parameters
+    )
+    response_json = response.json()
+    return response_json["results"]
+
+
+question_data = get_question_data(10)
+
+print(question_data)
 
 # question_data = [
 #     {
